@@ -1,33 +1,32 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { AUTH_TOKEN } from '../constants'
-import { timeDifferenceforDate } from '../utils'
+import { timeDifferenceForDate } from '../utils'
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
-
 const VOTE_MUTATION = gql`
-    mutation VoteMutation ($linkId: ID!) {
-        vote (linkId: $linkId) {
+  mutation VoteMutation($linkId: ID!) {
+    vote(linkId: $linkId) {
+      id
+      link {
+        votes {
+          id
+          user {
             id
-            link {
-                votes {
-                    id
-                    user {
-                        id
-                    }
-                }
-            }
-            user {
-                id
-            }
+          }
         }
+      }
+      user {
+        id
+      }
     }
+  }
 `
-
 
 class Link extends Component {
     render() {
         const authToken = localStorage.getItem(AUTH_TOKEN)
+
         return (
             <div className="flex mt2 items-start">
                 <div className="flex items-center">
@@ -36,9 +35,10 @@ class Link extends Component {
                         <Mutation
                             mutation={VOTE_MUTATION}
                             variables={{ linkId: this.props.link.id }}
-                            update={(store, { data: { vote } } ) =>
-                            this.props.updateStoreAfterVote (store, vote, this.props.link.id)
-                            } >
+                            update={(store, { data: { vote } }) =>
+                                this.props.updateStoreAfterVote(store, vote, this.props.link.id)
+                            }
+                        >
                             {voteMutation => (
                                 <div className="ml1 gray f11" onClick={voteMutation}>
                                     ▲
@@ -56,15 +56,11 @@ class Link extends Component {
                         {this.props.link.postedBy
                             ? this.props.link.postedBy.name
                             : 'Unknown'}{' '}
-                        {timeDifferenceforDate(this.props.link.createdAt)}
+                        {timeDifferenceForDate(this.props.link.createdAt)}
                     </div>
                 </div>
             </div>
         )
-    }
-
-    _voteForLink = async () => {
-
     }
 }
 

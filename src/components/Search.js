@@ -4,32 +4,32 @@ import gql from 'graphql-tag'
 import Link from './Link'
 
 const FEED_SEARCH_QUERY = gql`
-    query FeedSearchQuery($filter: String!) {
-        feed(filter: $filter) {
-            links {
-                id
-                url
-                description
-                createdAt
-                postedBy {
-                    id
-                    name
-                }
-                votes {
-                    id
-                    user {
-                        id 
-                    }
-                }
-            }
+  query FeedSearchQuery($filter: String!) {
+    feed(filter: $filter) {
+      links {
+        id
+        url
+        description
+        createdAt
+        postedBy {
+          id
+          name
         }
+        votes {
+          id
+          user {
+            id
+          }
+        }
+      }
     }
+  }
 `
 
 class Search extends Component {
     state = {
         links: [],
-        filter: ''
+        filter: '',
     }
 
     render() {
@@ -38,8 +38,9 @@ class Search extends Component {
                 <div>
                     Search
                     <input
-                        type='text'
-                        onChange={e => this.setState({ filter: e.target.value })} />
+                        type="text"
+                        onChange={e => this.setState({ filter: e.target.value })}
+                    />
                     <button onClick={() => this._executeSearch()}>OK</button>
                 </div>
                 {this.state.links.map((link, index) => (
@@ -48,6 +49,7 @@ class Search extends Component {
             </div>
         )
     }
+
     _executeSearch = async () => {
         const { filter } = this.state
         const result = await this.props.client.query({

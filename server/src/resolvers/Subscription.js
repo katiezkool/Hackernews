@@ -1,26 +1,26 @@
-const newLink = {
-  subscribe: (parent, args, ctx, info) => {
-    return ctx.db.subscription.link(
-      // https://github.com/graphcool/prisma/issues/1734
-      // { where: { mutation_in: ['CREATED'] } },
-      { },
-      info,
+function newLinkSubscribe (parent, args, context, info) {
+    return context.db.subscription.link(
+        { where: { mutation_in: ['CREATED'] } },
+        info,
     )
-  },
+}
+
+const newLink = {
+    subscribe: newLinkSubscribe
+}
+
+function newVoteSubscribe (parent, args, context, info) {
+    return context.db.subscription.vote(
+        { where: { mutation_in: ['CREATED'] } },
+        info,
+    )
 }
 
 const newVote = {
-  subscribe: (parent, args, ctx, info) => {
-    return ctx.db.subscription.vote(
-      // https://github.com/graphcool/prisma/issues/1734
-      // { where: { mutation_in: ['CREATED'] } },
-      { },
-      info,
-    )
-  },
+    subscribe: newVoteSubscribe
 }
 
 module.exports = {
-  newLink,
-  newVote,
+    newLink,
+    newVote,
 }

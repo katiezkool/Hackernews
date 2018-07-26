@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
+import gql from 'graphql-tag'
 import { FEED_QUERY } from './LinkList'
+import { LINKS_PER_PAGE } from '../constants'
 
 const POST_MUTATION = gql`
   mutation PostMutation($description: String!, $url: String!) {
@@ -45,17 +46,18 @@ class CreateLink extends Component {
                     variables={{ description, url }}
                     onCompleted={() => this.props.history.push('/new/1')}
                     update={(store, { data: { post } }) => {
+                        const first = LINKS_PER_PAGE
                         const skip = 0
                         const orderBy = 'createdAt_DESC'
                         const data = store.readQuery({
                             query: FEED_QUERY,
-                            variables: {  skip, orderBy },
+                            variables: { first, skip, orderBy },
                         })
                         data.feed.links.unshift(post)
                         store.writeQuery({
                             query: FEED_QUERY,
                             data,
-                            variables: { skip, orderBy },
+                            variables: { first, skip, orderBy },
                         })
                     }}
                 >
